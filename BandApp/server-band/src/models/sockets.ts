@@ -1,9 +1,12 @@
-const BandList = require('./band-list');
+import BandList from './bandList';
+import { Server } from 'socket.io';
 
 class Sockets {
-  constructor(io) {
-    this.io = io;
+  private io: Server;
+  private bandList: BandList;
 
+  constructor(io: Server) {
+    this.io = io;
     this.bandList = new BandList();
   }
 
@@ -47,4 +50,4 @@ class Sockets {
   }
 }
 
-module.exports = Sockets;
+export default Sockets;

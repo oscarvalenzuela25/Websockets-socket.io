@@ -1,6 +1,8 @@
-const Band = require('./band');
+import Band from './band';
 
 class BandList {
+  private bands: Band[];
+
   constructor() {
     this.bands = [
       new Band('Metallica'),
@@ -10,13 +12,13 @@ class BandList {
     ];
   }
 
-  addBand(name) {
+  addBand(name: string) {
     const newBand = new Band(name);
     this.bands.push(newBand);
     return this.bands;
   }
 
-  removeBand(bandId) {
+  removeBand(bandId: string) {
     this.bands = this.bands.filter(band => band.id !== bandId);
   }
 
@@ -24,7 +26,7 @@ class BandList {
     return this.bands;
   }
 
-  increaseVote(bandId) {
+  increaseVote(bandId: string) {
     this.bands = this.bands.map(band => {
       if (band.id === bandId) {
         band.votes += 1;
@@ -34,7 +36,7 @@ class BandList {
     });
   }
 
-  changeBandName(bandId, bandName) {
+  changeBandName(bandId: string, bandName: string) {
     this.bands = this.bands.map(band => {
       if (band.id === bandId) {
         band.name = bandName;
@@ -45,4 +47,4 @@ class BandList {
   }
 }
 
-module.exports = BandList;
+export default BandList;
