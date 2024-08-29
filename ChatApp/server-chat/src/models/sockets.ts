@@ -1,33 +1,37 @@
-const {
+import { verifyJWT } from '../utils/jwt';
+import {
   userConnected,
   userDisconnected,
   getUsers,
   saveMessages,
-} = require('../controllers/sockets');
-const { verifyJWT } = require('../utils/jwt');
+} from '../controllers/sockets';
+import { Server } from 'socket.io';
 
 class Sockets {
-  constructor(io) {
-    this.io = io;
+  io;
 
+  constructor(io: Server) {
+    this.io = io;
     this.socketEvents();
   }
 
   socketEvents() {
     // On connection
     this.io.on('connection', async socket => {
-      const [valid, uid] = verifyJWT(socket.handshake.query['x-token']);
+      const [valid, uid] = verifyJWT(
+        (socket.handshake.query['x-token'] as never) || ''
+      );
 
       if (!valid) {
         console.log('Socket no identificado');
         return socket.disconnect();
       } else {
         console.log('Cliente conectado', new Date().toLocaleString());
-        await userConnected(uid);
+        await userConnected(uid || '');
       }
 
       // Unimos el usuario a una sala
-      socket.join(uid);
+      socket.join(uid || '');
       // Emitimos un mensaje a todos los de la sala
       // this.io.to(uid).emit('personal-message', 'Bienvenido!');
 
@@ -41,7 +45,7 @@ class Sockets {
       this.io.emit('list-users', await getUsers());
 
       socket.on('disconnect', async () => {
-        await userDisconnected(uid);
+        await userDisconnected(uid || '');
         this.io.emit('list-users', await getUsers());
         console.log('Cliente desconectado', new Date().toLocaleString());
       });
@@ -49,4 +53,4 @@ class Sockets {
   }
 }
 
-module.exports = Sockets;
+export default Sockets;

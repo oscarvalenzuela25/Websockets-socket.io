@@ -1,16 +1,20 @@
-// Servidor de Express
-const express = require('express');
-const http = require('http');
-const socketio = require('socket.io');
-const path = require('path');
-const { dbConnection } = require('../database/config');
-const cors = require('cors');
-const authRoutes = require('../routes/auth');
-const messageRoutes = require('../routes/messages');
+import express from 'express';
+import http from 'http';
+import { Server as SocketServer } from 'socket.io';
+import path from 'path';
+import { dbConnection } from '../database/config';
+import cors from 'cors';
+import authRoutes from '../routes/auth';
+import messageRoutes from '../routes/messages';
 
-const Sockets = require('./sockets');
+import Sockets from './sockets';
 
 class Server {
+  private app;
+  private port;
+  private server;
+  private io;
+
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
@@ -22,14 +26,12 @@ class Server {
     this.server = http.createServer(this.app);
 
     // Configuraciones de sockets
-    this.io = socketio(this.server, {
-      /* configuraciones */
-    });
+    this.io = new SocketServer(this.server, {});
   }
 
   middlewares() {
     // Desplegar el directorio público
-    this.app.use(express.static(path.resolve(__dirname, '../public')));
+    this.app.use(express.static(path.resolve(__dirname, '../../public')));
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use('/api/login', authRoutes);
@@ -56,4 +58,4 @@ class Server {
   }
 }
 
-module.exports = Server;
+export default Server;

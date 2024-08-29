@@ -1,8 +1,13 @@
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const { generateJWT } = require('../utils/jwt');
+import User from '../models/user';
+import bcrypt from 'bcryptjs';
+import { generateJWT } from '../utils/jwt';
+import { Response, Request } from 'express';
 
-module.exports.createUser = async (req, res) => {
+interface ExtendsRequest extends Request {
+  uid?: string;
+}
+
+export const createUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
     const emailExists = await User.findOne({ email });
@@ -27,7 +32,7 @@ module.exports.createUser = async (req, res) => {
   }
 };
 
-module.exports.login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -52,7 +57,7 @@ module.exports.login = async (req, res) => {
   }
 };
 
-module.exports.renew = async (req, res) => {
+export const renew = async (req: ExtendsRequest, res: Response) => {
   try {
     const uid = req.uid;
     const user = await User.findById(uid);

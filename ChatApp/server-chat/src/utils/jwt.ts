@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-const generateJWT = uid => {
+export const generateJWT = (uid: string) => {
   return new Promise((resolve, reject) => {
     const payload = { uid };
     jwt.sign(
       payload,
-      process.env.SECRET_JWT_SEED,
+      process.env.SECRET_JWT_SEED || '',
       {
         expiresIn: '24h',
       },
@@ -21,16 +21,13 @@ const generateJWT = uid => {
   });
 };
 
-const verifyJWT = token => {
+export const verifyJWT = (token: string): [boolean, null | string] => {
   try {
-    const { uid } = jwt.verify(token, process.env.SECRET_JWT_SEED);
+    const { uid } = jwt.verify(token, process.env.SECRET_JWT_SEED || '') as {
+      uid: string;
+    };
     return [true, uid];
   } catch (error) {
     return [false, null];
   }
-};
-
-module.exports = {
-  generateJWT,
-  verifyJWT,
 };

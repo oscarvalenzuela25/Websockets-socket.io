@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const MessageSchema = Schema(
+const MessageSchema = new Schema(
   {
     from: {
       type: Schema.Types.ObjectId,
@@ -23,8 +23,8 @@ const MessageSchema = Schema(
 );
 
 MessageSchema.method('toJSON', function () {
-  const { __v, ...object } = this.toObject();
+  const object = this.toObject();
   return object;
 });
 
-module.exports = model('Message', MessageSchema);
+export default model('Message', MessageSchema);

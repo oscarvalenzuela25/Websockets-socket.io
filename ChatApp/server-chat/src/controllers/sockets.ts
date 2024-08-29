@@ -1,7 +1,7 @@
-const User = require('../models/user');
-const Message = require('../models/message');
+import Message from '../models/message';
+import User from '../models/user';
 
-module.exports.userConnected = async uid => {
+export const userConnected = async (uid: string) => {
   const user = await User.findById(uid);
   if (user) {
     user.online = true;
@@ -10,7 +10,7 @@ module.exports.userConnected = async uid => {
   }
 };
 
-module.exports.userDisconnected = async uid => {
+export const userDisconnected = async (uid: string) => {
   const user = await User.findById(uid);
   if (user) {
     user.online = false;
@@ -19,12 +19,16 @@ module.exports.userDisconnected = async uid => {
   }
 };
 
-module.exports.getUsers = async () => {
+export const getUsers = async () => {
   const users = await User.find().sort('-online');
   return users;
 };
 
-module.exports.saveMessages = async payload => {
+export const saveMessages = async (payload: {
+  from: string;
+  to: string;
+  message: string;
+}) => {
   try {
     const message = new Message(payload);
     await message.save();

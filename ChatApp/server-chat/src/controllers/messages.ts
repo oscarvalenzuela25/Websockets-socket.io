@@ -1,6 +1,11 @@
-const Message = require('../models/message');
+import { Request, Response } from 'express';
+import Message from '../models/message';
 
-module.exports.getMessages = async (req, res) => {
+interface ExtendsRequest extends Request {
+  uid?: string;
+}
+
+export const getMessages = async (req: ExtendsRequest, res: Response) => {
   const myId = req.uid;
   const fromUserId = req.params.fromUserId;
 
